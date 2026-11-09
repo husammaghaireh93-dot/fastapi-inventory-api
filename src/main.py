@@ -17,6 +17,7 @@ if str(pkg_root) not in sys.path:
 from src.database import init_db, get_connection
 from src.routers.auth_router import router as auth_router
 from src.routers.inventory_router import router as inventory_router
+from src.routers.health_router import router as health_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -42,6 +43,7 @@ app.add_middleware(
 
 app.include_router(auth_router)
 app.include_router(inventory_router)
+app.include_router(health_router)
 
 @app.get("/health", tags=["Health"])
 def health_check():
