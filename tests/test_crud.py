@@ -4,7 +4,10 @@ import tempfile
 from pathlib import Path
 import sys
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+root = Path(__file__).resolve().parent.parent
+if str(root) not in sys.path:
+    sys.path.insert(0, str(root))
+
 test_db = tempfile.mktemp(suffix=".db")
 os.environ["INVENTORY_DB_PATH"] = test_db
 

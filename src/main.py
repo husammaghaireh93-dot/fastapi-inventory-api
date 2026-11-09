@@ -1,19 +1,25 @@
 """
 FastAPI Inventory Management Service with SQLite WAL Mode
-Generated & Orchestrated via NOVA Universal Dispatcher & Antigravity Engine.
+Orchestrated via NOVA Universal Dispatcher & Antigravity Engine.
 """
-import sqlite3
+import os
+import sys
+from pathlib import Path
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .database import init_db, get_connection
-from .routers.auth_router import router as auth_router
-from .routers.inventory_router import router as inventory_router
+# Ensure package context
+pkg_root = Path(__file__).resolve().parent.parent
+if str(pkg_root) not in sys.path:
+    sys.path.insert(0, str(pkg_root))
+
+from src.database import init_db, get_connection
+from src.routers.auth_router import router as auth_router
+from src.routers.inventory_router import router as inventory_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: ensure SQLite WAL tables exist
     init_db()
     yield
 
@@ -51,20 +57,3 @@ def health_check():
         "engine": "FastAPI + SQLite WAL",
         "docs": "/docs"
     }
-
-# Compatibility class for legacy unit tests
-class InventoryApp:
-    def __init__(self):
-        self.items = {}
-
-    def add_item(self, item_id: str, name: str, quantity: int) -> bool:
-        if quantity < 0:
-            return False
-        self.items[item_id] = {"name": name, "quantity": quantity}
-        return True
-
-    def get_item(self, item_id: str):
-        return self.items.get(item_id)
-
-    def total_count(self) -> int:
-        return sum(item["quantity"] for item in self.items.values())

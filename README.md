@@ -1,10 +1,10 @@
 # Fastapi-Inventory-Api 📦
 **Production-Ready Inventory Management REST API**  
-*Built via NOVA Universal Dispatcher & Antigravity Orchestration Engine*
+*Orchestrated via NOVA Universal Dispatcher & Antigravity Orchestration Engine*
 
-## 🚀 Highlights
+## 🚀 Architectural Highlights
 - **FastAPI Core:** Interactive Swagger UI at `/docs` and ReDoc at `/redoc`.
-- **SQLite WAL Mode:** Tuned for ACID concurrency (`PRAGMA journal_mode=WAL`).
+- **SQLite WAL Mode:** Tuned for high-concurrency ACID transactions (`PRAGMA journal_mode=WAL`).
 - **Authentication:** PBKDF2-HMAC-SHA256 password hashing & signed Bearer tokens.
 - **Stock Tracking:** Atomic adjustments with complete audit history in `inventory_transactions`.
 - **Testing:** 100% unit and integration test coverage (`TestClient`, WAL tests, auth tests).

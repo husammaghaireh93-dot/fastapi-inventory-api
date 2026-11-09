@@ -1,6 +1,5 @@
 """
 Authentication & Authorization Layer using PBKDF2-HMAC-SHA256 and signed bearer tokens.
-Zero external C-library dependency for 100% Android/Linux portability.
 """
 import os
 import hmac
@@ -11,7 +10,7 @@ import time
 from fastapi import HTTPException, Security, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "nova-insecure-default-change-in-prod-f8319e72")
+SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "nova-production-wal-secret-key-92841")
 security_bearer = HTTPBearer(auto_error=False)
 
 def hash_password(password: str) -> str:
