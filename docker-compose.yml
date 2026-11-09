@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  inventory-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - INVENTORY_DB_PATH=/app/data/inventory.db
+      - JWT_SECRET_KEY=nova-production-wal-secret-key-92841
+    volumes:
+      - inventory_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  inventory_data:
