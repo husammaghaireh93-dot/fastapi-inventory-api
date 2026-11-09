@@ -90,14 +90,17 @@ def get_item_by_id(item_id: int) -> Optional[Dict[str, Any]]:
     conn.close()
     return dict(row) if row else None
 
+ALLOWED_UPDATE_FIELDS = {"sku", "name", "description", "category", "unit_price", "reorder_level"}
+
 def update_item(item_id: int, fields: Dict[str, Any]) -> bool:
-    if not fields:
+    filtered_fields = {k: v for k, v in fields.items() if k in ALLOWED_UPDATE_FIELDS}
+    if not filtered_fields:
         return False
     conn = get_connection()
     cur = conn.cursor()
-    set_clauses = [f"{k} = ?" for k in fields.keys()]
-    values = list(fields.values()) + [item_id]
-    query = f"UPDATE items SET {', '.join(set_clauses)}, updated_at = CURRENT_TIMESTAMP WHERE id = ?;"
+    set_clauses = [f"{k} = ?" for k in filtered_fields.keys()]
+    values = list(filtered_fields.values()) + [item_id]
+    query = f"UPDATE items SET {', '.join(set_clauses)}, updated_at = CURRENT_TIMESTAMP WHERE id = ?;"  # nosec B608
     cur.execute(query, values)
     conn.commit()
     updated = (cur.rowcount > 0)
