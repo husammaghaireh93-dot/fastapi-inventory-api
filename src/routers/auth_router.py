@@ -21,7 +21,7 @@ def login(req: UserLogin):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid username or password")
     token = create_access_token({"sub": user["username"], "user_id": user["id"], "role": user["role"]})
-    return {"access_token": token, "token_type": "bearer", "username": user["username"], "role": user["role"]}  # nosec B105
+    return {"access_token": token, "token_type": "bearer", "username": user["username"], "role": user["role"]}
 
 @router.get("/me")
 def get_me(user: dict = Depends(get_current_user)):
