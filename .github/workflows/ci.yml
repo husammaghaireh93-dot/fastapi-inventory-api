@@ -1,0 +1,36 @@
+name: Inventory API CI Pipeline
+
+on:
+  push:
+    branches: [ main, "feature/**" ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Run Pytest Test Suite & WAL Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pytest
+
+      - name: Run Full Pytest Suite
+        run: |
+          python -m pytest -v
+
+      - name: Verify SQLite WAL Mode
+        run: |
+          python -c "from src.database import init_db, get_connection; init_db(); c=get_connection(); cur=c.cursor(); cur.execute('PRAGMA journal_mode;'); print('WAL Mode Verified:', cur.fetchone()[0])"
