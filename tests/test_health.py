@@ -20,8 +20,9 @@ root = Path(__file__).resolve().parent.parent
 if str(root) not in sys.path:
     sys.path.insert(0, str(root))
 
-# Isolate the test database BEFORE importing src modules (DB path is read at import time).
-TEST_DB = tempfile.mktemp(suffix="_health_test.db")
+# Securely isolate test database inside a private temporary directory before importing app
+_test_dir = tempfile.TemporaryDirectory(prefix="health_test_")
+TEST_DB = os.path.join(_test_dir.name, "health_test.db")
 os.environ["INVENTORY_DB_PATH"] = TEST_DB
 
 from fastapi.testclient import TestClient
@@ -34,10 +35,7 @@ from src.main import app
 def setup_database():
     init_db()
     yield
-    for ext in ("", "-wal", "-shm"):
-        path = TEST_DB + ext
-        if os.path.exists(path):
-            os.remove(path)
+    _test_dir.cleanup()
 
 
 @pytest.fixture(scope="module")
